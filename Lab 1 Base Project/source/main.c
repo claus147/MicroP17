@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-
 #define poly 0x8408
 
 typedef uint16_t remainder;
 
-remainder CRCCheck(unsigned char test[], int length)
+remainder CRCGenerator(char test[], int length)
+	
 {
 	remainder rem = 0;
 	
@@ -14,7 +14,7 @@ remainder CRCCheck(unsigned char test[], int length)
 	{
 		rem = rem ^ test[bytes];
 		
-		for (int bits = 0; bits < 7; bits++)
+		for (int bits = 0; bits < 8; bits++)
 		{
 			if (rem & 0x0001)
 			{
@@ -28,18 +28,38 @@ remainder CRCCheck(unsigned char test[], int length)
 	}
 	
 return (rem);	
-		
-	
 	
 }	
+
+remainder CRCCheck(char test [], remainder old_crc)
+	
+{
+	remainder new_crc = CRCGenerator(test, strlen(test));
+	
+	remainder result = old_crc ^ new_crc;
+	
+	return (result);
+}
+
 int main()
 {
-	unsigned char demo[] = "2014";
-	int strLength = strlen(demo);
-	remainder CRC_generated = CRCCheck(demo, strLength);
+	char demo[] = "2014";
+	
+	remainder CRC_foobar = 18;
 
+	remainder CRC_generated = CRCGenerator(demo,strlen(demo));
+
+	remainder CRC_checked_good= CRCCheck(demo,CRC_generated);
+	
+	remainder CRC_checked_foobar= CRCCheck(demo,CRC_foobar);
+	
 	return 0;
 }
+
+
+
+
+
 
 
 
