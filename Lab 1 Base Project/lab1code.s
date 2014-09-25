@@ -14,7 +14,7 @@ lab1code
 	PUSH {R1-R7}
 	
 	LDR R1, =0x8408	 	;putting generator into R1
-	LDR R2, =0x34313032	;putting 4012 into R2
+	LDR R2, =0x34313032	;putting 4102 into R2
 	MOV R4, #4			;length of the string to do crc
 	
 nextchar	
@@ -38,6 +38,6 @@ nocompare
 	;CBZ R7, nextchar	;bring the next ASCII char in 
 	B	singlecharcompare	;if not time to bring the next char in keep going
 toend	
-	POP {R1,R2,R4-R7}			;cleanup
+	POP {R1,R2,R4-R7}	;cleanup, not R3 
 	BX LR ;
 	END
