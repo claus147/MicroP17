@@ -23,59 +23,59 @@ ARM Macro Assembler    Page 1
    13 00000000         ;first push all registers to use onto stack
    14 00000000 B4FE            PUSH             {R1-R7}
    15 00000002         
-   16 00000002 F248 0148       MOV              R1, #0x8048 ;putting generator 
+   16 00000002 F248 4108       LDR              R1, =0x8408 ;putting generator 
                                                             into R1
-   17 00000006         ;MOV R2, #0x34313032 ;putting 4012 into R2
-   18 00000006 F243 0232       MOV              R2, #0x3032
-   19 0000000A F243 4831       MOV              R8, #0x3431
-   20 0000000E F04F 0404       MOV              R4, #4      ;length of the stri
+   17 00000006 4A0E            LDR              R2, =0x34313032 ;putting 4012 i
+                                                            nto R2
+   18 00000008 F04F 0404       MOV              R4, #4      ;length of the stri
                                                             ng to do crc
-   21 00000012         
-   22 00000012         nextchar
-   23 00000012 B1A4            CBZ              R4, toend   ;check to see if la
+   19 0000000C         
+   20 0000000C         nextchar
+   21 0000000C B1AC            CBZ              R4, toend   ;check to see if la
                                                             st char
-   24 00000014 F1A4 0401       SUB              R4, R4, #1  ;decrement number o
+   22 0000000E F1A4 0401       SUB              R4, R4, #1  ;decrement number o
                                                             f chars to use
-   25 00000018 F081 03FF       EOR              R3, R1, #0xFF ;take the first 8
+   23 00000012 F002 08FF       AND              R8, R2, #0xFF ;take the first 8
                                                              bits to be manipul
                                                             ated (lsb)
-   26 0000001C EA4F 2111       LSR              R1, R1, #8  ;shift the number r
+   24 00000016 EA88 0303       EOR              R3, R8, R3
+   25 0000001A EA4F 2212       LSR              R2, R2, #8  ;shift the number r
                                                             ight for prep to ta
                                                             ke in next number
-   27 00000020         singlecharcompare
-   28 00000020 F04F 0601       MOV              R6, #0x1    ;have a counter, up
-                                                             to 8
-   29 00000024 F003 0501       AND              R5, R3, #0x1 ;check if last bit
+   26 0000001E F04F 0608       MOV              R6, #8      ;have a counter to 
+                                                            count down from 8 t
+                                                            o 0
+   27 00000022         singlecharcompare
+   28 00000022 F003 0501       AND              R5, R3, #0x1 ;check if last bit
                                                              is a 1
-   30 00000028 EA4F 0353       LSR              R3, R3, #1  ;regardless if last
+   29 00000026 EA4F 0353       LSR              R3, R3, #1  ;regardless if last
                                                              bit is 1 we shift 
                                                             right
-   31 0000002C B10D            CBZ              R5, nocompare ;compare and bran
+   30 0000002A B10D            CBZ              R5, nocompare ;compare and bran
                                                             ch if 0
-   32 0000002E         compare
-   33 0000002E EA83 0301       EOR              R3, R3, R1  ;xor what we have w
+   31 0000002C         compare
+   32 0000002C EA83 0301       EOR              R3, R3, R1  ;xor what we have w
                                                             ith generator
-   34 00000032         nocompare
-   35 00000032 F106 0601       ADD              R6, R6, #0x1 ;increment counter
-                                                            
-   36 00000036 F1A6 0708       SUB              R7, R6, #8  ;check if 8th time 
-                                                            (end of ASCII char)
-                                                            
-   37 0000003A DE00            CBZ              R7, nextchar ;bring the next AS
-                                                            CII char in 
+   33 00000030         nocompare
+   34 00000030 F1A6 0601       SUB              R6, R6, #1  ;decrement counter
+   35 00000034         ;SUB R7, R6, #8  ;check if 8th time (end of ASCII char)
+   36 00000034 2E00            CMP              R6, #0
+   37 00000036 D0E9            BEQ              nextchar
+   38 00000038         ;CBZ R7, nextchar ;bring the next ASCII char in 
+   39 00000038 E7F3            B                singlecharcompare ;if not time 
 
 
 
 ARM Macro Assembler    Page 2 
 
 
-   38 0000003C E7F0            B                singlecharcompare ;if not time 
                                                             to bring the next c
                                                             har in keep going
-   39 0000003E         toend
-   40 0000003E BCFE            POP              {R1-R7}     ;cleanup
-   41 00000040 4770            BX               LR          ;
-   42 00000042                 END
+   40 0000003A         toend
+   41 0000003A BCF6            POP              {R1,R2,R4-R7} ;cleanup
+   42 0000003C 4770            BX               LR          ;
+   43 0000003E                 END
+              00 00 34313032 
 Command Line: --debug --xref --cpu=Cortex-M4.fp --apcs=interwork --depend=.\obj
 ect\lab1code.d -o.\object\lab1code.o -I"C:\Users\Claus\Documents\!McGill\!Fall 
 2014\ECSE 426\MicroP17\Lab 1 Base Project\RTE" -I"C:\Users\Claus\Documents\!McG
@@ -83,3 +83,67 @@ ill\!Fall 2014\ECSE 426\MicroP17\Lab 1 Base Project\RTE\Device\STM32F407VG" -IC
 :\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include -IC:\Keil_v5\ARM\PACK\Keil\STM
 32F4xx_DFP\1.0.8\Device\Include --predefine="__EVAL SETA 1" --predefine="__MICR
 OLIB SETA 1" --list=.\listings\lab1code.lst lab1code.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+compare 0000002C
+
+Symbol: compare
+   Definitions
+      At line 31 in file lab1code.s
+   Uses
+      None
+Comment: compare unused
+lab1code 00000000
+
+Symbol: lab1code
+   Definitions
+      At line 12 in file lab1code.s
+   Uses
+      At line 11 in file lab1code.s
+Comment: lab1code used once
+nextchar 0000000C
+
+Symbol: nextchar
+   Definitions
+      At line 20 in file lab1code.s
+   Uses
+      At line 37 in file lab1code.s
+Comment: nextchar used once
+nocompare 00000030
+
+Symbol: nocompare
+   Definitions
+      At line 33 in file lab1code.s
+   Uses
+      At line 30 in file lab1code.s
+Comment: nocompare used once
+singlecharcompare 00000022
+
+Symbol: singlecharcompare
+   Definitions
+      At line 27 in file lab1code.s
+   Uses
+      At line 39 in file lab1code.s
+Comment: singlecharcompare used once
+text 00000000
+
+Symbol: text
+   Definitions
+      At line 10 in file lab1code.s
+   Uses
+      None
+Comment: text unused
+toend 0000003A
+
+Symbol: toend
+   Definitions
+      At line 40 in file lab1code.s
+   Uses
+      At line 21 in file lab1code.s
+Comment: toend used once
+7 symbols
+342 symbols in table

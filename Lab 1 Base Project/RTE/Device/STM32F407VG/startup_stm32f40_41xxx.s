@@ -184,6 +184,8 @@ Reset_Handler    PROC
 
 ; Where our code gets put in!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
 				 
+				 ;IMPORT __main
+				 ;LDR	 R0, =__main
 				 IMPORT lab1code
 				 LDR	 R0, =lab1code
 				 BX      R0

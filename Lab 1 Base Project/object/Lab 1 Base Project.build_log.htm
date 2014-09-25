@@ -10,14 +10,13 @@ Project File Date:  09/21/2014
 Rebuild target 'Target 1'
 compiling fputc_debug.c...
 compiling main.c...
-source\main.c(38): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
-        int strLength = strlen(demo);
-source\main.c: 1 warning, 0 errors
 assembling lab1code.s...
-lab1code.s(37): error: A1176E: Branch offset 0xFFFFFFD4 out of range.  Permitted values are 0x00000000 to 0x0000007E
+lab1code.s(43): warning: A1581W: Added 2 bytes of padding at address 0x3e
 assembling startup_stm32f40_41xxx.s...
 compiling system_stm32f4xx.c...
-".\object\Lab 1 Base Project.axf" - 1 Error(s), 1 Warning(s).
+linking...
+Program Size: Code=356 RO-data=408 RW-data=0 ZI-data=1024  
+".\object\Lab 1 Base Project.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -45,14 +44,9 @@ Package Vendor: Keil
       Source file:   CMSIS\UserCodeTemplates\ARM\ITM_Retarget.c
 
    * Component: Keil::Device:Startup:1.3.1
+      Include file:  RTE_Driver\Config\RTE_Device.h
+      Source file:   Device\Source\ARM\STM32F4xx_OTP.s
+      Include file:  Device\Include\stm32f4xx.h
       Source file:   Device\Source\system_stm32f4xx.c
       Source file:   Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
       Source file:   Device\Source\ARM\startup_stm32f40_41xxx.s
-      Source file:   Device\Source\ARM\STM32F4xx_OTP.s
-      Include file:  RTE_Driver\Config\RTE_Device.h
-      Include file:  Device\Include\stm32f4xx.h
-Target not created
-</pre>
-</body>
-</html>
-

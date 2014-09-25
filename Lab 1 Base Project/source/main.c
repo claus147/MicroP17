@@ -16,9 +16,13 @@ remainder CRCGenerator(char test[], int length)
 		
 		for (int bits = 0; bits < 8; bits++)
 		{
+			
 			if (rem & 0x0001)
 			{
-				rem = (rem >> 1) ^ poly;
+				//rem = (rem >> 1) ^ poly;
+				
+				rem = (rem >> 1);
+				rem = rem^poly;
 			}
 			else
 			{
