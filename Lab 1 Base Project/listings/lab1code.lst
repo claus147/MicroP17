@@ -5,10 +5,10 @@ ARM Macro Assembler    Page 1
 
 
     1 00000000         
-    2 00000000         ;R1 : Generator stored here
-    3 00000000         ;R2 : The data to test (backwards)
-    4 00000000         ;R3 : single ASCII char to be manipulated
-    5 00000000         ;R4 : scratch register, decremented at every single char
+    2 00000000         ;R2 : Generator stored here
+    3 00000000         ;R9 : The data to test (backwards)
+    4 00000000         ;R7 : single ASCII char to be manipulated
+    5 00000000         ;R1 : scratch register, decremented at every single char
                         taken in
     6 00000000         ;R5 : scratch register, to check if xor with generator s
                        hould be performed or not
@@ -20,63 +20,66 @@ ARM Macro Assembler    Page 1
    10 00000000                 AREA             text, CODE, READONLY
    11 00000000                 EXPORT           lab1code
    12 00000000         lab1code
+                               FUNCTION
    13 00000000         ;first push all registers to use onto stack
-   14 00000000 B4FE            PUSH             {R1-R7}
-   15 00000002         
-   16 00000002 F248 4108       LDR              R1, =0x8408 ;putting generator 
-                                                            into R1
-   17 00000006 4A0E            LDR              R2, =0x34313032 ;putting 4102 i
-                                                            nto R2
-   18 00000008 F04F 0404       MOV              R4, #4      ;length of the stri
-                                                            ng to do crc
-   19 0000000C         
-   20 0000000C         nextchar
-   21 0000000C B1AC            CBZ              R4, toend   ;check to see if la
+   14 00000000 E92D 03FC       PUSH             {R2-R9}
+   15 00000004         ;R0 has the pointer to data
+   16 00000004         ;R2 has length of data
+   17 00000004 F248 4208       LDR              R2, =0x8408 ;putting generator 
+                                                            into R2
+   18 00000008         ;LDR R9, =0x34313032 ;putting 4102 into R9
+   19 00000008         ;MOV R1, #4   ;length of the string to do crc
+   20 00000008 F04F 0900       MOV              R9, #0
+   21 0000000C F04F 0700       MOV              R7, #0
+   22 00000010         nextchar
+   23 00000010 B1B9            CBZ              R1, toend   ;check to see if la
                                                             st char
-   22 0000000E F1A4 0401       SUB              R4, R4, #1  ;decrement number o
+   24 00000012 F1A1 0101       SUB              R1, R1, #1  ;decrement number o
                                                             f chars to use
-   23 00000012 F002 08FF       AND              R8, R2, #0xFF ;take the first 8
+   25 00000016 F850 8009       LDR              R8, [R0, R9]
+   26 0000001A F109 0901       ADD              R9, #1
+   27 0000001E F008 08FF       AND              R8, R8, #0xFF ;take the first 8
                                                              bits to be manipul
                                                             ated (lsb)
-   24 00000016 EA88 0303       EOR              R3, R8, R3
-   25 0000001A EA4F 2212       LSR              R2, R2, #8  ;shift the number r
-                                                            ight for prep to ta
-                                                            ke in next number
-   26 0000001E F04F 0608       MOV              R6, #8      ;have a counter to 
+   28 00000022 EA88 0707       EOR              R7, R8, R7
+   29 00000026         ;LSR R9, R9, #8  ;shift the number right for prep to tak
+                       e in next number
+   30 00000026 F04F 0608       MOV              R6, #8      ;have a counter to 
                                                             count down from 8 t
                                                             o 0
-   27 00000022         singlecharcompare
-   28 00000022 F003 0501       AND              R5, R3, #0x1 ;check if last bit
+   31 0000002A         singlecharcompare
+   32 0000002A F007 0501       AND              R5, R7, #0x1 ;check if last bit
                                                              is a 1
-   29 00000026 EA4F 0353       LSR              R3, R3, #1  ;regardless if last
+   33 0000002E EA4F 0757       LSR              R7, R7, #1  ;regardless if last
                                                              bit is 1 we shift 
                                                             right
-   30 0000002A B10D            CBZ              R5, nocompare ;compare and bran
+   34 00000032 B10D            CBZ              R5, nocompare ;compare and bran
                                                             ch if 0
-   31 0000002C         compare
-   32 0000002C EA83 0301       EOR              R3, R3, R1  ;xor what we have w
+   35 00000034         compare
+   36 00000034 EA87 0702       EOR              R7, R7, R2  ;xor what we have w
                                                             ith generator
-   33 00000030         nocompare
-   34 00000030 F1A6 0601       SUB              R6, R6, #1  ;decrement counter
-   35 00000034         ;SUB R7, R6, #8  ;check if 8th time (end of ASCII char)
-   36 00000034 2E00            CMP              R6, #0
-   37 00000036 D0E9            BEQ              nextchar
-   38 00000038         ;CBZ R7, nextchar ;bring the next ASCII char in 
-   39 00000038 E7F3            B                singlecharcompare ;if not time 
+   37 00000038         nocompare
+   38 00000038 F1A6 0601       SUB              R6, R6, #1  ;decrement counter
+   39 0000003C         ;SUB R7, R6, #8  ;check if 8th time (end of ASCII char)
+   40 0000003C 2E00            CMP              R6, #0
+   41 0000003E D0E7            BEQ              nextchar
 
 
 
 ARM Macro Assembler    Page 2 
 
 
+   42 00000040         ;CBZ R7, nextchar ;bring the next ASCII char in 
+   43 00000040 E7F3            B                singlecharcompare ;if not time 
                                                             to bring the next c
                                                             har in keep going
-   40 0000003A         toend
-   41 0000003A BCF6            POP              {R1,R2,R4-R7} ;cleanup, not R3 
-                                                            
-   42 0000003C 4770            BX               LR          ;
-   43 0000003E                 END
-              00 00 34313032 
+   44 00000042         toend
+   45 00000042 4638            MOV              R0, R7
+   46 00000044         ;POP {R2,R9,R1-R7} ;cleanup, not R7 
+   47 00000044 4770            BX               LR          ;
+   48 00000046                 ENDFUNC
+   49 00000046         ;END
+                       
 Command Line: --debug --xref --cpu=Cortex-M4.fp --apcs=interwork --depend=.\obj
 ect\lab1code.d -o.\object\lab1code.o -I"C:\Users\Claus\Documents\!McGill\!Fall 
 2014\ECSE 426\MicroP17\Lab 1 Base Project\RTE" -I"C:\Users\Claus\Documents\!McG
@@ -90,11 +93,11 @@ OLIB SETA 1" --list=.\listings\lab1code.lst lab1code.s
 ARM Macro Assembler    Page 1 Alphabetic symbol ordering
 Relocatable symbols
 
-compare 0000002C
+compare 00000034
 
 Symbol: compare
    Definitions
-      At line 31 in file lab1code.s
+      At line 35 in file lab1code.s
    Uses
       None
 Comment: compare unused
@@ -106,29 +109,29 @@ Symbol: lab1code
    Uses
       At line 11 in file lab1code.s
 Comment: lab1code used once
-nextchar 0000000C
+nextchar 00000010
 
 Symbol: nextchar
    Definitions
-      At line 20 in file lab1code.s
+      At line 22 in file lab1code.s
    Uses
-      At line 37 in file lab1code.s
+      At line 41 in file lab1code.s
 Comment: nextchar used once
-nocompare 00000030
+nocompare 00000038
 
 Symbol: nocompare
    Definitions
-      At line 33 in file lab1code.s
+      At line 37 in file lab1code.s
    Uses
-      At line 30 in file lab1code.s
+      At line 34 in file lab1code.s
 Comment: nocompare used once
-singlecharcompare 00000022
+singlecharcompare 0000002A
 
 Symbol: singlecharcompare
    Definitions
-      At line 27 in file lab1code.s
+      At line 31 in file lab1code.s
    Uses
-      At line 39 in file lab1code.s
+      At line 43 in file lab1code.s
 Comment: singlecharcompare used once
 text 00000000
 
@@ -138,13 +141,13 @@ Symbol: text
    Uses
       None
 Comment: text unused
-toend 0000003A
+toend 00000042
 
 Symbol: toend
    Definitions
-      At line 40 in file lab1code.s
+      At line 44 in file lab1code.s
    Uses
-      At line 21 in file lab1code.s
+      At line 23 in file lab1code.s
 Comment: toend used once
 7 symbols
-342 symbols in table
+340 symbols in table

@@ -427,6 +427,16 @@
               <FileType>5</FileType>
               <FilePath>.\source\stm32f4xx_conf.h</FilePath>
             </File>
+            <File>
+              <FileName>lab1code.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\lab1code.s</FilePath>
+            </File>
+            <File>
+              <FileName>lab1codecheck.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\lab1codecheck.s</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
