@@ -487,10 +487,10 @@ ARM Macro Assembler    Page 8
   185 00000000         ; Where our code gets put in!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
   186 00000000         
-  187 00000000                 IMPORT           __main
-  188 00000000 4805            LDR              R0, =__main
-  189 00000002         ;IMPORT lab1code
-  190 00000002         ;LDR  R0, =lab1code
+  187 00000000         ;IMPORT __main
+  188 00000000         ;LDR  R0, =__main
+  189 00000000                 IMPORT           lab1code
+  190 00000000 4805            LDR              R0, =lab1code
   191 00000002 4700            BX               R0
   192 00000004                 ENDP
   193 00000004         
@@ -1945,13 +1945,13 @@ Comment: __Vectors_Size used once
 ARM Macro Assembler    Page 1 Alphabetic symbol ordering
 External symbols
 
-__main 00000000
+lab1code 00000000
 
-Symbol: __main
+Symbol: lab1code
    Definitions
-      At line 187 in file RTE\Device\STM32F407VG\startup_stm32f40_41xxx.s
+      At line 189 in file RTE\Device\STM32F407VG\startup_stm32f40_41xxx.s
    Uses
-      At line 188 in file RTE\Device\STM32F407VG\startup_stm32f40_41xxx.s
-Comment: __main used once
+      At line 190 in file RTE\Device\STM32F407VG\startup_stm32f40_41xxx.s
+Comment: lab1code used once
 1 symbol
 443 symbols in table
