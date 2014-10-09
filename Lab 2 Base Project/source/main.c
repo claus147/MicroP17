@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "stm32f4xx.h"                  // Device header
 #include "stm32f4xx_conf.h"
-#include "temp_tool.h"
+//#include "temp_tool.h"
 
 static volatile uint16_t flag;
 static volatile uint16_t tick_count;
@@ -57,6 +57,44 @@ float getCelcius (float volts) {
 
 }
 
+//need to do a moving average
+//want to have 'd' samples in the buffer
+//when a new sample is added replace oldest sample in the buffer
+
+struct movingAverage{
+	int pointer;
+	int size;
+	float* list;
+};
+
+void initMovingAverage(struct movingAverage ma, int size){	//initialize the struct with a list size
+	float theList[size];
+	ma.pointer = 0;
+	ma.size = size;
+	ma.list = theList;
+}
+void initAverageValues(struct movingAverage ma){			//populate the moving average array
+	for (int i = 0; i < ma.size;i++){
+		getVoltage ();
+		ma.list[i] = getCelcius(ADC1->DR);	
+	}
+}
+
+void addSample(struct movingAverage ma, float sample){	//add a sample to the moving average
+	ma.list[ma.pointer] = sample;
+	ma.pointer = (ma.pointer + 1) %ma.size; //wrap around 
+}
+
+float getAverage (struct movingAverage ma){
+	float average;
+	for (int i = 0; i < ma.size;i++){
+		average = average + ma.list[i];
+	}
+	average = average/ma.size;
+	return average;
+}
+
+
 
 //============================================================================================================================================================================
 //Main
@@ -90,7 +128,7 @@ int main(){
 		if(flag) {
 
 			flag = 0;
-			printf("Temperature is %f\n", final_temperature;
+			printf("Temperature is %f\n", final_temperature);
 		}
 
 		getVoltage ();
