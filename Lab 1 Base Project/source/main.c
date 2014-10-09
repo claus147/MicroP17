@@ -51,11 +51,15 @@ remainder CRCCheck(char test [], int length, remainder old_crc)
 	return (result);
 }
 
+extern remainder lab1code(char test[], int length);
+
+
 int main()
 {
 
-	char demo[] = "In Flanders fields the poppies blow, Between the crosses, row on row, That mark our place; and in the sky, The larks, still bravely singing, fly, Scarce heard amid the guns below. We are the Dead. Short days ago, We lived, felt dawn, saw sunset glow, Loved and were loved, and now we lie, In Flanders fields. Take up our quarrel with the foe, To you from failing hands we throw, The torch; be yours to hold it high. If ye break faith with us who die, We shall not sleep, though poppies grow, In Flanders fields.";
-	
+	//char demo[] = "In Flanders fields the poppies blow, Between the crosses, row on row, That mark our place; and in the sky, The larks, still bravely singing, fly, Scarce heard amid the guns below. We are the Dead. Short days ago, We lived, felt dawn, saw sunset glow, Loved and were loved, and now we lie, In Flanders fields. Take up our quarrel with the foe, To you from failing hands we throw, The torch; be yours to hold it high. If ye break faith with us who die, We shall not sleep, though poppies grow, In Flanders fields.";
+	char demo[] = "2014";
+	remainder CRCAss = lab1code( demo, strlen(demo));
 //Random CRC code
 	remainder CRC_foobar = 18;
 
@@ -66,6 +70,7 @@ int main()
 	remainder CRC_checked_good= CRCCheck(demo,strlen(demo),CRC_generated);
 //Case 2: Solution where CRC code inputed does not match the CRC generated for the poem. Will return a non-zero remainder.
 	remainder CRC_checked_foobar= CRCCheck(demo,strlen(demo),CRC_foobar);
+	//char test[] = "2014";
 	
 	return 0;
 }

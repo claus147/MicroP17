@@ -176,19 +176,13 @@ __Vectors_Size  EQU  __Vectors_End - __Vectors
 ; Reset handler
 Reset_Handler    PROC
                  EXPORT  Reset_Handler             [WEAK]
-;        IMPORT  SystemInit
-;        IMPORT  __main
-;                 LDR     R0, =SystemInit
-;                 BLX     R0
-;                 LDR     R0, =__main
+        IMPORT  SystemInit
+        IMPORT  __main
 
-; Where our code gets put in!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
-				 
-				 IMPORT __main
-				 LDR	 R0, =__main
-				 ;IMPORT lab1code
-				 ;LDR	 R0, =lab1code
-				 BX      R0
+                 LDR     R0, =SystemInit
+                 BLX     R0
+                 LDR     R0, =__main
+                 BX      R0
                  ENDP
 
 ; Dummy Exception Handlers (infinite loops which can be modified)
